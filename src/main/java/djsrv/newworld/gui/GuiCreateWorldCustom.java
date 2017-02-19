@@ -10,7 +10,7 @@ public class GuiCreateWorldCustom extends GuiCreateWorld {
 
     public GuiCreateWorldCustom(GuiScreen parentScreen) {
         super(parentScreen);
-        this.setDefaults();
+        setDefaults();
     }
 
     private void setDefaults() {
