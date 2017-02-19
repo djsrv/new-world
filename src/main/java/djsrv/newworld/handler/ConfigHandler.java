@@ -16,10 +16,10 @@ public class ConfigHandler {
 
     public static String defaultGameMode = "survival";
     public static String defaultSeed = "";
-    public static Boolean defaultGenerateStructures = true;
+    public static boolean defaultGenerateStructures = true;
     public static WorldType defaultWorldType = WorldType.DEFAULT;
-    public static Boolean defaultAllowCheats = false;
-    public static Boolean defaultBonusChest = false;
+    public static boolean defaultAllowCheats = false;
+    public static boolean defaultBonusChest = false;
     public static String defaultWorldPreset = "";
 
     public static void loadConfig(File configFile) {
@@ -45,7 +45,7 @@ public class ConfigHandler {
         return prop.getString();
     }
 
-    private static boolean getBoolean (String category, String propName, String comment, Boolean defaultValue) {
+    private static boolean getBoolean (String category, String propName, String comment, boolean defaultValue) {
         Property prop = config.get(category, propName, defaultValue);
         if (comment != null) prop.setComment(comment);
         return prop.getBoolean(defaultValue);
