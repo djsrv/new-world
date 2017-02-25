@@ -108,8 +108,8 @@ public class GuiCreateWorldCustom extends GuiCreateWorld {
         if (!allowCheatsWasSetByUser) {
             setPrivateValue(LibObfuscation.ALLOW_CHEATS, gameMode.equals("creative"));
         }
-        btnAllowCommands.enabled = !hardCoreMode;
-        btnBonusItems.enabled = !hardCoreMode;
+        this.btnAllowCommands.enabled = !hardCoreMode;
+        this.btnBonusItems.enabled = !hardCoreMode;
     }
 
     private void lockButtons() {
