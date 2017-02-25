@@ -1,7 +1,7 @@
 package djsrv.newworld.handler;
 
 import djsrv.newworld.NewWorld;
-import net.minecraft.world.GameType;
+import djsrv.newworld.lib.LibGameMode;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ConfigHandler {
@@ -32,7 +31,8 @@ public class ConfigHandler {
     public static boolean bonusChestLocked = false;
     public static boolean customizeLocked = false;
 
-    private static String[] GAME_MODES = { "survival", "hardcore", "creative" };
+    public static String[] gameModeBlackList = {};
+    public static String[] worldTypeBlackList = {};
 
     public static void loadConfig(File configFile) {
         config = new Configuration(configFile);
@@ -41,53 +41,38 @@ public class ConfigHandler {
 
     public static void handleConfig() {
         gameModeDefault = getDefaultGameMode();
-        worldSeedDefault = getString(ConfigCategory.WORLD_SEED, ConfigKey.DEFAULT, null, worldSeedDefault);
-        generateStructuresDefault = getBoolean(ConfigCategory.GENERATE_STRUCTURES, ConfigKey.DEFAULT, null, generateStructuresDefault);
+        worldSeedDefault = config.get(ConfigCategory.WORLD_SEED, ConfigKey.DEFAULT, worldSeedDefault).getString();
+        generateStructuresDefault = config.get(ConfigCategory.GENERATE_STRUCTURES, ConfigKey.DEFAULT, generateStructuresDefault).getBoolean();
         worldTypeDefault = getDefaultWorldType();
-        allowCheatsDefault = getBoolean(ConfigCategory.ALLOW_CHEATS, ConfigKey.DEFAULT, null, allowCheatsDefault);
-        bonusChestDefault = getBoolean(ConfigCategory.BONUS_CHEST, ConfigKey.DEFAULT, null, bonusChestDefault);
-        worldPresetDefault = getString(ConfigCategory.CUSTOMIZE, ConfigKey.DEFAULT_PRESET, null, worldPresetDefault);
+        allowCheatsDefault = config.get(ConfigCategory.ALLOW_CHEATS, ConfigKey.DEFAULT, allowCheatsDefault).getBoolean();
+        bonusChestDefault = config.get(ConfigCategory.BONUS_CHEST, ConfigKey.DEFAULT, bonusChestDefault).getBoolean();
+        worldPresetDefault = config.get(ConfigCategory.CUSTOMIZE, ConfigKey.DEFAULT_PRESET, worldPresetDefault).getString();
 
-        gameModeLocked = getBoolean(ConfigCategory.GAME_MODE, ConfigKey.LOCKED, null, gameModeLocked);
-        worldSeedLocked = getBoolean(ConfigCategory.WORLD_SEED, ConfigKey.LOCKED, null, worldSeedLocked);
-        generateStructuresLocked = getBoolean(ConfigCategory.GENERATE_STRUCTURES, ConfigKey.LOCKED, null, generateStructuresLocked);
-        worldTypeLocked = getBoolean(ConfigCategory.WORLD_TYPE, ConfigKey.LOCKED, null, worldTypeLocked);
-        allowCheatsLocked = getBoolean(ConfigCategory.ALLOW_CHEATS, ConfigKey.LOCKED, null, allowCheatsLocked);
-        bonusChestLocked = getBoolean(ConfigCategory.BONUS_CHEST, ConfigKey.LOCKED, null, bonusChestLocked);
-        customizeLocked = getBoolean(ConfigCategory.CUSTOMIZE, ConfigKey.LOCKED, null, customizeLocked);
+        gameModeLocked = config.get(ConfigCategory.GAME_MODE, ConfigKey.LOCKED, gameModeLocked).getBoolean();
+        worldSeedLocked = config.get(ConfigCategory.WORLD_SEED, ConfigKey.LOCKED, worldSeedLocked).getBoolean();
+        generateStructuresLocked = config.get(ConfigCategory.GENERATE_STRUCTURES, ConfigKey.LOCKED, generateStructuresLocked).getBoolean();
+        worldTypeLocked = config.get(ConfigCategory.WORLD_TYPE, ConfigKey.LOCKED, worldTypeLocked).getBoolean();
+        allowCheatsLocked = config.get(ConfigCategory.ALLOW_CHEATS, ConfigKey.LOCKED, allowCheatsLocked).getBoolean();
+        bonusChestLocked = config.get(ConfigCategory.BONUS_CHEST, ConfigKey.LOCKED, bonusChestLocked).getBoolean();
+        customizeLocked = config.get(ConfigCategory.CUSTOMIZE, ConfigKey.LOCKED, customizeLocked).getBoolean();
+
+        gameModeBlackList = config.get(ConfigCategory.GAME_MODE, ConfigKey.BLACK_LIST, gameModeBlackList, getGameModeComment()).getStringList();
+        worldTypeBlackList = config.get(ConfigCategory.WORLD_TYPE, ConfigKey.BLACK_LIST, worldTypeBlackList, getWorldTypeComment()).getStringList();
 
         if (config.hasChanged()) config.save();
     }
 
-    private static String getString (String category, String propName, String comment, String defaultValue) {
-        Property prop = config.get(category, propName, defaultValue);
-        if (comment != null) prop.setComment(comment);
-        return prop.getString();
-    }
-
-    private static boolean getBoolean (String category, String propName, String comment, boolean defaultValue) {
-        Property prop = config.get(category, propName, defaultValue);
-        if (comment != null) prop.setComment(comment);
-        return prop.getBoolean(defaultValue);
-    }
-
     private static String getDefaultGameMode() {
-        String comment = "Valid values: ";
-        comment += String.join(", ", GAME_MODES);
-
-        String gameMode = getString(ConfigCategory.GAME_MODE, ConfigKey.DEFAULT, comment, gameModeDefault);
-        if (!Arrays.asList(GAME_MODES).contains(gameMode)) {
+        String gameMode = config.get(ConfigCategory.GAME_MODE, ConfigKey.DEFAULT, gameModeDefault).getString();
+        if (!LibGameMode.GAME_MODES.contains(gameMode)) {
             NewWorld.logger.log(Level.ERROR, "Invalid game mode: " + gameMode);
             return "survival";
         }
         return gameMode;
     }
 
-    private static WorldType getDefaultWorldType () {
-        String comment = "Valid values: ";
-        comment += String.join(", ", getValidWorldTypes());
-
-        String name = getString(ConfigCategory.WORLD_TYPE, ConfigKey.DEFAULT, comment, worldTypeDefault.getWorldTypeName());
+    private static WorldType getDefaultWorldType() {
+        String name = config.get(ConfigCategory.WORLD_TYPE, ConfigKey.DEFAULT, worldTypeDefault.getWorldTypeName()).getString();
         WorldType worldType = WorldType.parseWorldType(name);
         if (worldType == null) {
             NewWorld.logger.log(Level.ERROR, "Invalid world type: " + name);
@@ -96,10 +81,22 @@ public class ConfigHandler {
         return worldType;
     }
 
-    private static List<String> getValidWorldTypes () {
+    private static String getGameModeComment() {
+        String comment = "Valid game modes: ";
+        comment += String.join(", ", LibGameMode.GAME_MODES);
+        return comment;
+    }
+
+    private static String getWorldTypeComment() {
+        String comment = "Valid world types: ";
+        comment += String.join(", ", getValidWorldTypes());
+        return comment;
+    }
+
+    private static List<String> getValidWorldTypes() {
         List<String> worldTypes = new ArrayList<>();
         for (WorldType worldType : WorldType.WORLD_TYPES) {
-            if (worldType != null) worldTypes.add(worldType.getWorldTypeName());
+            if (worldType != null && worldType.getCanBeCreated()) worldTypes.add(worldType.getWorldTypeName());
         }
         return worldTypes;
     }
@@ -118,6 +115,7 @@ public class ConfigHandler {
         public static final String DEFAULT = "default";
         public static final String DEFAULT_PRESET = "default preset";
         public static final String LOCKED = "locked";
+        public static final String BLACK_LIST = "blacklist";
     }
 
 }
