@@ -1,8 +1,8 @@
 [
 {
-  "modid": "newworld",
-  "name": "New World",
-  "description": "Let's you change the default options on the New World menu.",
+  "modid": "newworldorder",
+  "name": "New World Order",
+  "description": "Configure the Create World screen",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "authorList": ["djsrv"]

@@ -1,7 +1,7 @@
-package djsrv.newworld.handler;
+package djsrv.newworldorder.handler;
 
-import djsrv.newworld.gui.GuiCreateWorldCustom;
-import djsrv.newworld.lib.LibObfuscation;
+import djsrv.newworldorder.gui.GuiCreateWorldCustom;
+import djsrv.newworldorder.lib.LibObfuscation;
 import net.minecraft.client.gui.GuiCreateWorld;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.event.GuiOpenEvent;

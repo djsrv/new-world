@@ -1,8 +1,8 @@
-package djsrv.newworld.gui;
+package djsrv.newworldorder.gui;
 
-import djsrv.newworld.handler.ConfigHandler;
-import djsrv.newworld.lib.LibGameMode;
-import djsrv.newworld.lib.LibObfuscation;
+import djsrv.newworldorder.handler.ConfigHandler;
+import djsrv.newworldorder.lib.LibGameMode;
+import djsrv.newworldorder.lib.LibObfuscation;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiCreateWorld;
 import net.minecraft.client.gui.GuiScreen;

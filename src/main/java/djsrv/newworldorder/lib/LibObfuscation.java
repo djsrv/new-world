@@ -1,4 +1,4 @@
-package djsrv.newworld.lib;
+package djsrv.newworldorder.lib;
 
 public class LibObfuscation {
 

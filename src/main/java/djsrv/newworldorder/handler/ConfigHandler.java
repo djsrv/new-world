@@ -1,10 +1,9 @@
-package djsrv.newworld.handler;
+package djsrv.newworldorder.handler;
 
-import djsrv.newworld.NewWorld;
-import djsrv.newworld.lib.LibGameMode;
+import djsrv.newworldorder.NewWorldOrder;
+import djsrv.newworldorder.lib.LibGameMode;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 
 import java.io.File;
@@ -65,7 +64,7 @@ public class ConfigHandler {
     private static String getDefaultGameMode() {
         String gameMode = config.get(ConfigCategory.GAME_MODE, ConfigKey.DEFAULT, gameModeDefault).getString();
         if (!LibGameMode.GAME_MODES.contains(gameMode)) {
-            NewWorld.logger.log(Level.ERROR, "Invalid game mode: " + gameMode);
+            NewWorldOrder.logger.log(Level.ERROR, "Invalid game mode: " + gameMode);
             return "survival";
         }
         return gameMode;
@@ -75,7 +74,7 @@ public class ConfigHandler {
         String name = config.get(ConfigCategory.WORLD_TYPE, ConfigKey.DEFAULT, worldTypeDefault.getWorldTypeName()).getString();
         WorldType worldType = WorldType.parseWorldType(name);
         if (worldType == null || !worldType.getCanBeCreated()) {
-            NewWorld.logger.log(Level.ERROR, "Invalid world type: " + name);
+            NewWorldOrder.logger.log(Level.ERROR, "Invalid world type: " + name);
             return WorldType.DEFAULT;
         }
         return worldType;
