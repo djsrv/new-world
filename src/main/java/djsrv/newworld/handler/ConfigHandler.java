@@ -74,7 +74,7 @@ public class ConfigHandler {
     private static WorldType getDefaultWorldType() {
         String name = config.get(ConfigCategory.WORLD_TYPE, ConfigKey.DEFAULT, worldTypeDefault.getWorldTypeName()).getString();
         WorldType worldType = WorldType.parseWorldType(name);
-        if (worldType == null) {
+        if (worldType == null || !worldType.getCanBeCreated()) {
             NewWorld.logger.log(Level.ERROR, "Invalid world type: " + name);
             return WorldType.DEFAULT;
         }
