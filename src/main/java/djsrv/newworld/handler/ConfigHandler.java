@@ -9,18 +9,27 @@ import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigHandler {
 
     public static Configuration config;
 
-    public static String defaultGameMode = "survival";
-    public static String defaultSeed = "";
-    public static boolean defaultGenerateStructures = true;
-    public static WorldType defaultWorldType = WorldType.DEFAULT;
-    public static boolean defaultAllowCheats = false;
-    public static boolean defaultBonusChest = false;
-    public static String defaultWorldPreset = "";
+    public static String gameModeDefault = "survival";
+    public static String worldSeedDefault = "";
+    public static boolean generateStructuresDefault = true;
+    public static WorldType worldTypeDefault = WorldType.DEFAULT;
+    public static boolean allowCheatsDefault = false;
+    public static boolean bonusChestDefault = false;
+    public static String worldPresetDefault = "";
+
+    public static boolean gameModeLocked = false;
+    public static boolean worldSeedLocked = false;
+    public static boolean generateStructuresLocked = false;
+    public static boolean worldTypeLocked = false;
+    public static boolean allowCheatsLocked = false;
+    public static boolean bonusChestLocked = false;
+    public static boolean customizeLocked = false;
 
     public static void loadConfig(File configFile) {
         config = new Configuration(configFile);
@@ -28,13 +37,21 @@ public class ConfigHandler {
     }
 
     public static void handleConfig() {
-        defaultGameMode = getDefaultGameMode();
-        defaultSeed = getString("defaults", "seed.default", "Seed", defaultSeed);
-        defaultGenerateStructures = getBoolean("defaults", "generateStructures.default", "Generate Structures", defaultGenerateStructures);
-        defaultWorldType = getDefaultWorldType();
-        defaultAllowCheats = getBoolean("defaults", "allowCheats.default", "Allow Cheats", defaultAllowCheats);
-        defaultBonusChest = getBoolean("defaults", "bonusChest.default", "Bonus Chest", defaultBonusChest);
-        defaultWorldPreset = getString("defaults", "worldPreset.default", "World Preset", defaultWorldPreset);
+        gameModeDefault = getDefaultGameMode();
+        worldSeedDefault = getString(ConfigCategory.WORLD_SEED, ConfigKey.DEFAULT, null, worldSeedDefault);
+        generateStructuresDefault = getBoolean(ConfigCategory.GENERATE_STRUCTURES, ConfigKey.DEFAULT, null, generateStructuresDefault);
+        worldTypeDefault = getDefaultWorldType();
+        allowCheatsDefault = getBoolean(ConfigCategory.ALLOW_CHEATS, ConfigKey.DEFAULT, null, allowCheatsDefault);
+        bonusChestDefault = getBoolean(ConfigCategory.BONUS_CHEST, ConfigKey.DEFAULT, null, bonusChestDefault);
+        worldPresetDefault = getString(ConfigCategory.CUSTOMIZE, ConfigKey.DEFAULT_PRESET, null, worldPresetDefault);
+
+        gameModeLocked = getBoolean(ConfigCategory.GAME_MODE, ConfigKey.LOCKED, null, gameModeLocked);
+        worldSeedLocked = getBoolean(ConfigCategory.WORLD_SEED, ConfigKey.LOCKED, null, worldSeedLocked);
+        generateStructuresLocked = getBoolean(ConfigCategory.GENERATE_STRUCTURES, ConfigKey.LOCKED, null, generateStructuresLocked);
+        worldTypeLocked = getBoolean(ConfigCategory.WORLD_TYPE, ConfigKey.LOCKED, null, worldTypeLocked);
+        allowCheatsLocked = getBoolean(ConfigCategory.ALLOW_CHEATS, ConfigKey.LOCKED, null, allowCheatsLocked);
+        bonusChestLocked = getBoolean(ConfigCategory.BONUS_CHEST, ConfigKey.LOCKED, null, bonusChestLocked);
+        customizeLocked = getBoolean(ConfigCategory.CUSTOMIZE, ConfigKey.LOCKED, null, customizeLocked);
 
         if (config.hasChanged()) config.save();
     }
@@ -51,13 +68,13 @@ public class ConfigHandler {
         return prop.getBoolean(defaultValue);
     }
 
-    private static String getDefaultGameMode () {
-        ArrayList<String> validGameModes = getValidGameModes();
+    private static String getDefaultGameMode() {
+        List<String> validGameModes = getValidGameModes();
 
-        String comment = "Game Mode\nValid values: ";
+        String comment = "Valid values: ";
         comment += String.join(", ", validGameModes);
 
-        String gameMode = getString("defaults", "gameMode.default", comment, defaultGameMode);
+        String gameMode = getString(ConfigCategory.GAME_MODE, ConfigKey.DEFAULT, comment, gameModeDefault);
         if (!validGameModes.contains(gameMode)) {
             NewWorld.logger.log(Level.ERROR, "Invalid game mode: " + gameMode);
             return "survival";
@@ -65,8 +82,8 @@ public class ConfigHandler {
         return gameMode;
     }
 
-    private static ArrayList<String> getValidGameModes () {
-        ArrayList<String> gameModes = new ArrayList<String>();
+    private static List<String> getValidGameModes () {
+        List<String> gameModes = new ArrayList<>();
         for (GameType gameMode : GameType.values()) {
             if (gameMode != GameType.NOT_SET) gameModes.add(gameMode.getName());
         }
@@ -74,10 +91,10 @@ public class ConfigHandler {
     }
 
     private static WorldType getDefaultWorldType () {
-        String comment = "World Type\nValid values: ";
+        String comment = "Valid values: ";
         comment += String.join(", ", getValidWorldTypes());
 
-        String name = getString("defaults", "worldType.default", comment, defaultWorldType.getWorldTypeName());
+        String name = getString(ConfigCategory.WORLD_TYPE, ConfigKey.DEFAULT, comment, worldTypeDefault.getWorldTypeName());
         WorldType worldType = WorldType.parseWorldType(name);
         if (worldType == null) {
             NewWorld.logger.log(Level.ERROR, "Invalid world type: " + name);
@@ -86,12 +103,28 @@ public class ConfigHandler {
         return worldType;
     }
 
-    private static ArrayList<String> getValidWorldTypes () {
-        ArrayList<String> worldTypes = new ArrayList<String>();
+    private static List<String> getValidWorldTypes () {
+        List<String> worldTypes = new ArrayList<>();
         for (WorldType worldType : WorldType.WORLD_TYPES) {
             if (worldType != null) worldTypes.add(worldType.getWorldTypeName());
         }
         return worldTypes;
+    }
+
+    private class ConfigCategory {
+        public static final String GAME_MODE = "game mode";
+        public static final String WORLD_SEED = "world seed";
+        public static final String GENERATE_STRUCTURES = "generate structures";
+        public static final String WORLD_TYPE = "world type";
+        public static final String ALLOW_CHEATS = "allow cheats";
+        public static final String BONUS_CHEST = "bonus chest";
+        public static final String CUSTOMIZE = "customize";
+    }
+
+    private class ConfigKey {
+        public static final String DEFAULT = "default";
+        public static final String DEFAULT_PRESET = "default preset";
+        public static final String LOCKED = "locked";
     }
 
 }
