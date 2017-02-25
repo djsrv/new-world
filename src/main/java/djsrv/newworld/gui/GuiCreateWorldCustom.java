@@ -32,6 +32,16 @@ public class GuiCreateWorldCustom extends GuiCreateWorld {
         setDefaults();
     }
 
+    private void setDefaults() {
+        setPrivateValue(LibObfuscation.GAME_MODE, ConfigHandler.gameModeDefault);
+        setPrivateValue(LibObfuscation.WORLD_SEED, ConfigHandler.worldSeedDefault);
+        setPrivateValue(LibObfuscation.GENERATE_STRUCTURES, ConfigHandler.generateStructuresDefault);
+        setPrivateValue(LibObfuscation.WORLD_TYPE, ConfigHandler.worldTypeDefault.getWorldTypeID());
+        setPrivateValue(LibObfuscation.ALLOW_CHEATS, ConfigHandler.allowCheatsDefault);
+        setPrivateValue(LibObfuscation.BONUS_CHEST_ENABLED, ConfigHandler.bonusChestDefault);
+        setPrivateValue(LibObfuscation.WORLD_PRESET, ConfigHandler.worldPresetDefault);
+    }
+
     @Override
     public void initGui() {
         super.initGui();
@@ -100,16 +110,6 @@ public class GuiCreateWorldCustom extends GuiCreateWorld {
         }
         btnAllowCommands.enabled = !hardCoreMode;
         btnBonusItems.enabled = !hardCoreMode;
-    }
-
-    private void setDefaults() {
-        setPrivateValue(LibObfuscation.GAME_MODE, ConfigHandler.gameModeDefault);
-        setPrivateValue(LibObfuscation.WORLD_SEED, ConfigHandler.worldSeedDefault);
-        setPrivateValue(LibObfuscation.GENERATE_STRUCTURES, ConfigHandler.generateStructuresDefault);
-        setPrivateValue(LibObfuscation.WORLD_TYPE, ConfigHandler.worldTypeDefault.getWorldTypeID());
-        setPrivateValue(LibObfuscation.ALLOW_CHEATS, ConfigHandler.allowCheatsDefault);
-        setPrivateValue(LibObfuscation.BONUS_CHEST_ENABLED, ConfigHandler.bonusChestDefault);
-        setPrivateValue(LibObfuscation.WORLD_PRESET, ConfigHandler.worldPresetDefault);
     }
 
     private void lockButtons() {

@@ -81,6 +81,14 @@ public class ConfigHandler {
         return worldType;
     }
 
+    private static List<String> getValidWorldTypes() {
+        List<String> worldTypes = new ArrayList<>();
+        for (WorldType worldType : WorldType.WORLD_TYPES) {
+            if (worldType != null && worldType.getCanBeCreated()) worldTypes.add(worldType.getWorldTypeName());
+        }
+        return worldTypes;
+    }
+
     private static String getGameModeComment() {
         String comment = "Valid game modes: ";
         comment += String.join(", ", LibGameMode.GAME_MODES);
@@ -91,14 +99,6 @@ public class ConfigHandler {
         String comment = "Valid world types: ";
         comment += String.join(", ", getValidWorldTypes());
         return comment;
-    }
-
-    private static List<String> getValidWorldTypes() {
-        List<String> worldTypes = new ArrayList<>();
-        for (WorldType worldType : WorldType.WORLD_TYPES) {
-            if (worldType != null && worldType.getCanBeCreated()) worldTypes.add(worldType.getWorldTypeName());
-        }
-        return worldTypes;
     }
 
     private class ConfigCategory {
