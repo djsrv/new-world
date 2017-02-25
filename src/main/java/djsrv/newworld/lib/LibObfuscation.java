@@ -4,6 +4,7 @@ public class LibObfuscation {
 
     public static final String[] PARENT_SCREEN = { "parentScreen", "field_146332_f", "f" };
     public static final String[] GAME_MODE = { "gameMode", "field_146342_r", "r" };
+    public static final String[] HARDCORE_MODE = { "hardCoreMode", "field_146337_w", "x" };
     public static final String[] WORLD_SEED = { "worldSeed", "field_146329_I", "J" };
     public static final String[] GENERATE_STRUCTURES = { "generateStructuresEnabled", "field_146341_s", "t" };
     public static final String[] WORLD_TYPE = { "selectedIndex", "field_146331_K", "L" };

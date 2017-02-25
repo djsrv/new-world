@@ -35,6 +35,7 @@ public class GuiCreateWorldCustom extends GuiCreateWorld {
         this.btnBonusItems = getPrivateValue(LibObfuscation.BTN_BONUS_ITEMS);
         this.btnCustomizeType = getPrivateValue(LibObfuscation.BTN_CUSTOMIZE_TYPE);
         this.worldSeedField = getPrivateValue(LibObfuscation.WORLD_SEED_FIELD);
+        updateGameMode();
         lockButtons();
     }
 
@@ -42,6 +43,11 @@ public class GuiCreateWorldCustom extends GuiCreateWorld {
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
         lockButtons();
+    }
+
+    private void updateGameMode() {
+        String gameMode = getPrivateValue(LibObfuscation.GAME_MODE);
+        setPrivateValue(LibObfuscation.HARDCORE_MODE, gameMode.equals("hardcore"));
     }
 
     private void setDefaults() {

@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ConfigHandler {
@@ -30,6 +31,8 @@ public class ConfigHandler {
     public static boolean allowCheatsLocked = false;
     public static boolean bonusChestLocked = false;
     public static boolean customizeLocked = false;
+
+    private static String[] GAME_MODES = { "survival", "hardcore", "creative" };
 
     public static void loadConfig(File configFile) {
         config = new Configuration(configFile);
@@ -69,25 +72,15 @@ public class ConfigHandler {
     }
 
     private static String getDefaultGameMode() {
-        List<String> validGameModes = getValidGameModes();
-
         String comment = "Valid values: ";
-        comment += String.join(", ", validGameModes);
+        comment += String.join(", ", GAME_MODES);
 
         String gameMode = getString(ConfigCategory.GAME_MODE, ConfigKey.DEFAULT, comment, gameModeDefault);
-        if (!validGameModes.contains(gameMode)) {
+        if (!Arrays.asList(GAME_MODES).contains(gameMode)) {
             NewWorld.logger.log(Level.ERROR, "Invalid game mode: " + gameMode);
             return "survival";
         }
         return gameMode;
-    }
-
-    private static List<String> getValidGameModes () {
-        List<String> gameModes = new ArrayList<>();
-        for (GameType gameMode : GameType.values()) {
-            if (gameMode != GameType.NOT_SET) gameModes.add(gameMode.getName());
-        }
-        return gameModes;
     }
 
     private static WorldType getDefaultWorldType () {
